@@ -50,3 +50,4 @@ mvn exec:java -Dexec.mainClass="cat.itacademy.s1_05.n2.DirectoryTreeConfig"
 ```
 
 ## 🚀 Installation
+`git clone https://github.com/Borgesjesk/S1.05-JavaUtils.git`

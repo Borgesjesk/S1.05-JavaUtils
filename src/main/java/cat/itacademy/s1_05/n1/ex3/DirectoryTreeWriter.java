@@ -1,17 +1,19 @@
 package cat.itacademy.s1_05.n1.ex3;
 
+import cat.itacademy.s1_05.util.DirectoryTreeBuilder;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
 
 public class DirectoryTreeWriter {
 
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
     public void writeDirectoryTree(String directoryPath, String outputPath) {
+        writeDirectoryTree(directoryPath, outputPath, null);
+    }
+
+    public void writeDirectoryTree(String directoryPath, String outputPath, String footer) {
         File directory = new File(directoryPath);
 
         if (!directory.exists()) {
@@ -23,30 +25,12 @@ public class DirectoryTreeWriter {
             return;
         }
 
-        StringBuilder content = new StringBuilder();
-        content.append(" ─").append(directory.getName()).append("\n");
-        buildTree(directory, 0, content);
-
-        writeToFile(new File(outputPath), content.toString());
-    }
-
-    private void buildTree(File directory, int depth, StringBuilder content) {
-        File[] files = directory.listFiles();
-        if (files == null || files.length == 0) return;
-
-        Arrays.sort(files, (a, b) -> a.getName().compareToIgnoreCase(b.getName()));
-
-        for (File file : files) {
-            String indent = "\t".repeat(depth + 1);
-            String type = file.isDirectory() ? "(D)" : "(F)";
-            String lastModified = DATE_FORMAT.format(file.lastModified());
-            content.append(indent).append("└").append(type).append(" ")
-                    .append(file.getName()).append(" | ").append(lastModified).append("\n");
-
-            if (file.isDirectory()) {
-                buildTree(file, depth + 1, content);
-            }
+        String content = DirectoryTreeBuilder.build(directory);
+        if (footer != null) {
+            content += footer;
         }
+
+        writeToFile(new File(outputPath), content);
     }
 
     private void writeToFile(File outputFile, String content) {
